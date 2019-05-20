@@ -1,0 +1,40 @@
+{
+    "europe":[
+        "Northern Europe", 
+        "Southern Europe",
+        "Western Europe",
+        "Eastern Europe"
+    ],
+
+    "asia":[ 
+        "Southern Asia",
+        "Western Asia",
+        "Eastern Asia",
+        "South-Eastern Asia",
+        "Central Asia"
+    ],
+
+    "oceania":[
+        "Polynesia", 
+        "Australia and New Zealand",
+        "Melanesia",
+        "Micronesia"
+    ],
+
+    "americas":[
+        "Caribbean", 
+        "South America",
+        "Central America",
+        "Northern America"
+    ],
+
+    "africa":[
+        "Northern Africa", 
+        "Western Africa",
+        "Middle Africa",
+        "Southern Africa",
+        "Eastern Africa"
+    ],
+
+    "polar": [""]
+}
