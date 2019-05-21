@@ -15,7 +15,7 @@ logInBtn.addEventListener('click', function(){
         alert(". is abcent");
     } else if(email.value.indexOf('@') < 0 ){
         alert("@ is abcent");
-    } else if(!/.*[a-z, A-Z, 0-9][@].*[a-z, A-Z, 0-9][.].*[a-z, A-Z, 0-9]/.test(email.value)){
+    } else if(!/.*[a-zA-Z0-9][@].*[a-zA-Z0-9][.].*[a-zA-Z0-9]/.test(email.value)){
         alert("Wrong email format! example@gmail.com");
     } else if(password.value.length<8){
         alert("Password length less than 8 symbols!");
@@ -41,7 +41,7 @@ email.onblur = function(){
         emailErrors.innerHTML = "@ is absent!";
     } else if(email.value.indexOf('.') < 0 ){
         emailErrors.innerHTML = ". is absent!"
-    } else if(!/.*[a-z, A-Z, 0-9][@].*[a-z, A-Z, 0-9][.].*[a-z, A-Z, 0-9]/.test(email.value)){
+    } else if(!/.*[a-zA-Z0-9][@].*[a-zA-Z0-9][.].*[a-zA-Z0-9]/.test(email.value)){
         emailErrors.innerHTML = "Wrong email format! example@gmail.com";
     }  else {
         emailErrors.innerHTML = "";
