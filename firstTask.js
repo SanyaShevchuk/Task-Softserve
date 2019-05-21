@@ -134,8 +134,6 @@ countries.addEventListener('change', function(){
     }, 1500);
 })
 
-
-
 // // function sum(a, ...args){
 //     console.log(args);
 //     let result = args.reduce((a, b) => a+b);
