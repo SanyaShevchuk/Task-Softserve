@@ -1,3 +1,4 @@
+///////////////////FIRST TASK//////////////////////////
 let regions = document.querySelector('#task1 select[name="region"]');
 let subregions = document.querySelector('#task1 select[name="subregion"]');
 let countries = document.querySelector('#task1 select[name="country"');
@@ -132,6 +133,7 @@ countries.addEventListener('change', function(){
             })
     }, 1500);
 })
+
 
 
 // // function sum(a, ...args){
