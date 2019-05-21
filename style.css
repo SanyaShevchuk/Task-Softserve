@@ -1,4 +1,5 @@
-form select:not(:first-child){
+/* FIRST TASK */
+form#task1 select:not(:first-child){
     display: none;
 }
 
@@ -6,6 +7,7 @@ form select:not(:first-child){
     position:relative;
     margin-left: 3%;
     margin-top: 2%;
+    margin-bottom: 2%;
     display: none;
     height:30px;
 }
@@ -117,4 +119,35 @@ form select:not(:first-child){
   80%, 90% {
     stroke: #70c542;
   }
+}
+
+
+/* SECOND TASK */
+
+form#task2{
+    margin: auto;
+    display: block;
+    width: 300px;
+}
+
+form#task2 input{
+    display: block;
+    width: 100%;
+}
+
+form#task2 label{
+    text-align: center;
+    display: block;
+}
+
+form#task2 button{
+    margin: auto;
+    display: block;
+    margin-top: 2%;
+    
+}
+
+.errors{
+    color: red;
+    font-style: italic;
 }
