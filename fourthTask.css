@@ -1,0 +1,52 @@
+#fourthTask{
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 15% 65% 20%;
+    grid-column-gap: 0.25%;
+    grid-row-gap: 0.5%;
+}
+
+#fourthTask{
+    height: 600px;
+    grid-template-columns: 1fr 2fr;
+    grid-template-areas: 
+        "header header"
+        "aside article"
+        "footer footer";
+}
+
+#fourthTask *{
+    color: aliceblue;
+    text-align: center; 
+}
+
+#fourthTask header{
+    grid-area: header;
+    background-color: rgb(14, 27, 27);
+}
+
+#fourthTask footer{
+    grid-area: footer;
+    background-color: blueviolet;
+}
+
+#fourthTask aside{
+    grid-area: aside;
+    background-color: brown;
+}
+
+#fourthTask article{
+    grid-area: article;
+    background-color: yellowgreen;  
+}
+
+@media screen and (max-width:1024px){
+    #fourthTask {
+        grid-template-areas: 
+            "header header"
+            "aside article"
+            "aside footer";
+    }
+}
+
