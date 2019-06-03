@@ -1,6 +1,6 @@
-const regions = document.querySelector('#task1 select[name="regions"]');
-const subregions = document.querySelector('#task1 select[name="subregions"]');
-const countries = document.querySelector('#task1 select[name="countries"');
+const regions = document.querySelector('#task1 select[name="region"]');
+const subregions = document.querySelector('#task1 select[name="subregion"]');
+const countries = document.querySelector('#task1 select[name="country"');
 const countryInfo = document.querySelector('#task1 #country-info');
 const loadingIcon = document.querySelector('#wrapper');
 
@@ -21,6 +21,15 @@ function hideSelects(currentSelect, selects, selectsNames){
     countryInfo.innerHTML = "";
 }
 
+function createDefaultOption(currentSelect){
+    let selectedOption = document.createElement('option');
+    selectedOption.disabled = true;
+    selectedOption.hidden = true;
+    selectedOption.selected = true;
+    selectedOption.text = `Choose ${currentSelect}`;
+    return selectedOption; 
+}
+
 function selectListener(){
 
 }
@@ -31,21 +40,18 @@ function main(){
                             .map((element)=>element.name);
     
     regions.addEventListener('change', function(){
-        // loadingIcon.classList.add('show');
+        
         loadingIcon.style.display = "block";
         let region = this.value;
+        let nameOfSelector = selectsNames[selectsNames.indexOf(this.name)+1];
         hideSelects(this.name, selects, selectsNames);
         setTimeout(function(){
             fetch('./subregions.json')
                 .then(res => res.json())
                 .then(data => {
                     loadingIcon.style.display = "none";
-                    let selectedOption = document.createElement('option');
-                    selectedOption.disabled = true;
-                    selectedOption.hidden = true;
-                    selectedOption.selected = true;
-                    selectedOption.text = "Choose subregion"; 
-                    subregions.appendChild(selectedOption);
+            
+                    subregions.appendChild(createDefaultOption(nameOfSelector));
                 
                     if(!data[region][0]) {
                         subregions.style.display = "none";
@@ -53,7 +59,7 @@ function main(){
                         subregions.dispatchEvent(new Event('change'));
                     } else {
                         subregions.style.display = "inline-block";
-                        countries.style.display = "none";
+                        //countries.style.display = "none";
                     }
     
                     data[region].map(subregion => {
@@ -71,6 +77,7 @@ function main(){
     
     subregions.addEventListener('change', function(){
         loadingIcon.style.display = "block";
+        let nameOfSelector = selectsNames[selectsNames.indexOf(this.name)+1];
         if(regions.value == "polar"){
             loadingIcon.style.display = "none";
             let selectedOption = document.createElement('option');
@@ -90,9 +97,7 @@ function main(){
         let subregion = this.value;
         let url = `https://restcountries.eu/rest/v2/subregion/${subregion}`;
     
-        // countries.style.display = "none";
-        // countries.innerHTML = "";
-        // countryInfo.innerHTML = "";
+        
         hideSelects(this.name, selects, selectsNames);
     
         setTimeout(function(){
@@ -101,13 +106,8 @@ function main(){
                 .then(data => {
                     loadingIcon.style.display = "none";
                     countries.style.display = "inline-block";
-                    let selectedOption = document.createElement('option');
-    
-                    selectedOption.disabled = true;
-                    selectedOption.hidden = true;
-                    selectedOption.text = "Choose country"; 
-                    selectedOption.selected = true;
-                    countries.appendChild(selectedOption);
+                   
+                    countries.appendChild(createDefaultOption(nameOfSelector));
     
                     data.map(country => {
                         let option = document.createElement('option');
@@ -126,7 +126,7 @@ function main(){
         loadingIcon.style.display = "block";
         let country = this.value;
         let url = `https://restcountries.eu/rest/v2/name/${country}`;
-        // countryInfo.innerHTML = "";
+       
         hideSelects(this.name, selects, selectsNames)
     
         setTimeout(function(){
