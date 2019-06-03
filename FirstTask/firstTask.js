@@ -1,19 +1,40 @@
-function main(){
-    const regions = document.querySelector('#task1 select[name="region"]');
-    const subregions = document.querySelector('#task1 select[name="subregion"]');
-    const countries = document.querySelector('#task1 select[name="country"');
-    const countryInfo = document.querySelector('#task1 #country-info');
-    const loadingIcon = document.querySelector('#wrapper');
+const regions = document.querySelector('#task1 select[name="regions"]');
+const subregions = document.querySelector('#task1 select[name="subregions"]');
+const countries = document.querySelector('#task1 select[name="countries"');
+const countryInfo = document.querySelector('#task1 #country-info');
+const loadingIcon = document.querySelector('#wrapper');
 
+function displaySelects(){
+    if(subregions.hasChildNodes()){
+      
+    }
+}
+function hideSelects(currentSelect, selects, selectsNames){
+    let index = selectsNames.indexOf(currentSelect);
+    console.log(index);
+    for(let i = index+1; i < selects.length; i++){
+        selects[i].innerHTML = "";
+        // selects[i].className = "hidden";
+        // selects[i].classList.add('hidden');
+        selects[i].style.display = 'none';
+    }
+    countryInfo.innerHTML = "";
+}
+
+function selectListener(){
+
+}
+
+function main(){
+    const selects = document.querySelectorAll('#task1 select');
+    const selectsNames = Array.from(document.querySelectorAll('#task1 select'))
+                            .map((element)=>element.name);
+    
     regions.addEventListener('change', function(){
+        // loadingIcon.classList.add('show');
         loadingIcon.style.display = "block";
         let region = this.value;
-        subregions.innerHTML = "";
-        subregions.style.display = "none";
-        countries.style.display = "none";
-        countries.innerHTML = "";
-        countryInfo.innerHTML = "";
-        
+        hideSelects(this.name, selects, selectsNames);
         setTimeout(function(){
             fetch('./subregions.json')
                 .then(res => res.json())
@@ -69,9 +90,10 @@ function main(){
         let subregion = this.value;
         let url = `https://restcountries.eu/rest/v2/subregion/${subregion}`;
     
-        countries.style.display = "none";
-        countries.innerHTML = "";
-        countryInfo.innerHTML = "";
+        // countries.style.display = "none";
+        // countries.innerHTML = "";
+        // countryInfo.innerHTML = "";
+        hideSelects(this.name, selects, selectsNames);
     
         setTimeout(function(){
             fetch(url)
@@ -104,7 +126,8 @@ function main(){
         loadingIcon.style.display = "block";
         let country = this.value;
         let url = `https://restcountries.eu/rest/v2/name/${country}`;
-        countryInfo.innerHTML = "";
+        // countryInfo.innerHTML = "";
+        hideSelects(this.name, selects, selectsNames)
     
         setTimeout(function(){
             fetch(url)
