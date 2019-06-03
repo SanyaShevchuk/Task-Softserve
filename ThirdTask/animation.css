@@ -20,6 +20,7 @@
 }
 
 #piramidAnimation #firstLine{
+    border-style: dashed;
     width: 30px;
     opacity: 0.4;
     transform: translateX(27%) rotate(25deg) translateY(-450%);
@@ -28,6 +29,7 @@
     transform: translateX(0%) rotate(-24deg) translateY(437%);
 } 
 #piramidAnimation #thirdLine{
+    border-style: dashed;
     opacity: 0.4;
     transform: translateX(-56%) rotate(-23deg) translateY(-350%);
 }
@@ -48,6 +50,7 @@
     transform: rotate(-86.5deg);
 }
 #piramidAnimation #seventhLine{
+    border-style: dashed;
     width: 90px;
     top: -60%;
     left: -32%;
