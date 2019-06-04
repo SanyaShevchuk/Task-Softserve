@@ -6,7 +6,7 @@ const urls = {
 }
 const selects = document.querySelectorAll('#task1 select');
 const selectsNames = Array.from(selects).map((element)=>element.name);
-
+console.log(selectsNames);
 function hideNextSelects(indexOfCurrentSelector){
     for(let i = indexOfCurrentSelector+1; i < selects.length; i++){
         selects[i].innerHTML = "";
