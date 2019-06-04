@@ -72,6 +72,42 @@ function showCountryInfo(data){
     })
 }
 
+function showData(data, currentSelect){
+    const indexOfNextSelector = Array.from(selects).indexOf(currentSelect) + 1;
+    const nameOfNextSelector = selectsNames[indexOfNextSelector];
+    hideLoadingIcon();
+    
+    //if user chose polar-region or it is last selector
+    if(currentSelect.value!== 'polar' && nameOfNextSelector){
+        addOptions(selects[indexOfNextSelector], 
+            createDefaultOption(nameOfNextSelector));
+        
+        showNextSelect(indexOfNextSelector);
+        
+        //get data from local json file
+        if(currentSelect.name==='region'){
+            data = data[currentSelect.value];
+        }
+
+        const options = createOptions(data);
+        addOptions(selects[indexOfNextSelector], ...options);
+    
+    } else { 
+        showCountryInfo(data);
+    }    
+}
+
+function getData(url, currentSelect){
+    fetch(url)
+        .then(res => res.json())
+        .then(data => { 
+            showData(data, currentSelect);
+        })
+        .catch(error => {
+            console.log(error);
+        })
+}
+
 function getUrl(nameOfSelector, valueOfSelector){
     if(valueOfSelector === 'polar'){
         return urls['country'] + 'Antarctica';
@@ -83,47 +119,17 @@ function getUrl(nameOfSelector, valueOfSelector){
 }
 
 function selectListener(){
-    const valueOfCurrentSelector = this.value;
-    const indexOfCurrentSelector = selectsNames.indexOf(this.name);
-    const indexOfNextSelector = indexOfCurrentSelector + 1;
-    const nameOfCurrentSelector = selectsNames[selectsNames.indexOf(this.name)];
-    const nameOfNextSelector = selectsNames[selectsNames.indexOf(this.name)+1];
+    const currentSelect = this;
+    const indexOfCurrentSelector = Array.from(selects).indexOf(this);
     let url;
 
     hideNextSelects(indexOfCurrentSelector);
     showLoadingIcon();
     
-    url = getUrl(nameOfCurrentSelector, valueOfCurrentSelector);
-   
-    setTimeout(function(){
-        fetch(url)
-            .then(res => res.json())
-            .then(data => {
-                hideLoadingIcon();
-
-                //if user chose polar-region or it is last selector
-                if(valueOfCurrentSelector!== 'polar' && nameOfNextSelector){
-                    addOptions(selects[indexOfNextSelector], 
-                        createDefaultOption(nameOfNextSelector));
-                    
-                    showNextSelect(indexOfNextSelector);
-                    
-                    //get data from local json file
-                    if(nameOfCurrentSelector==='region'){
-                        data = data[valueOfCurrentSelector];
-                    }
-
-                    const options = createOptions(data);
-                    addOptions(selects[selectsNames.indexOf(nameOfNextSelector)], ...options);
-                
-                } else { 
-                    showCountryInfo(data);
-                }    
-            })
-            .catch(error => {
-                console.log(error);
-            })
-    }, 1500); 
+    url = getUrl(currentSelect.name, currentSelect.value);
+    setTimeout(()=>{
+        getData(url, currentSelect);
+    }, 1500);
 }
 
 function main(){
