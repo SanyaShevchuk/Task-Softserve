@@ -1,12 +1,15 @@
 const countryInfo = document.querySelector('#country-info');
-const urls = {
-    'region': './subregions.json',
-    'subregion' : 'https://restcountries.eu/rest/v2/subregion/',
-    'country' : 'https://restcountries.eu/rest/v2/name/'
-}
 const selects = document.querySelectorAll('#task1 select');
-const selectsNames = Array.from(selects).map((element)=>element.name);
-console.log(selectsNames);
+const selectsNames = Array.from(selects).map((element)=>{
+    return {'name' : element.name}
+    });
+
+let urls = new WeakMap();
+urls.set(selectsNames[0], './subregions.json');
+urls.set(selectsNames[1], 'https://restcountries.eu/rest/v2/subregion/');
+urls.set(selectsNames[2], 'https://restcountries.eu/rest/v2/name/');
+
+
 function hideNextSelects(indexOfCurrentSelector){
     for(let i = indexOfCurrentSelector+1; i < selects.length; i++){
         selects[i].innerHTML = "";
@@ -76,11 +79,10 @@ function showCountryInfo(data){
 
 function showData(data, currentSelect){
     const indexOfNextSelector = Array.from(selects).indexOf(currentSelect) + 1;
-    const nameOfNextSelector = selectsNames[indexOfNextSelector];
     hideLoadingIcon();
-    
-    //if user chose polar-region or it is last selector
-    if(currentSelect.value!== 'polar' && nameOfNextSelector){
+    const nameOfNextSelector = selectsNames[indexOfNextSelector]?
+        selectsNames[indexOfNextSelector].name: false;
+    if(currentSelect.value !== 'polar' && nameOfNextSelector){
         addOptions(selects[indexOfNextSelector], 
             createDefaultOption(nameOfNextSelector));
         
@@ -90,13 +92,12 @@ function showData(data, currentSelect){
         if(currentSelect.name==='region'){
             data = data[currentSelect.value];
         }
-
+    
         const options = createOptions(data);
         addOptions(selects[indexOfNextSelector], ...options);
-    
-    } else { 
+    } else {
         showCountryInfo(data);
-    }    
+    }
 }
 
 function getData(url, currentSelect){
@@ -110,13 +111,13 @@ function getData(url, currentSelect){
         })
 }
 
-function getUrl(nameOfSelector, valueOfSelector){
+function getUrl(nameOfSelector, valueOfSelector, indexOfCurrentSelector){
     if(valueOfSelector === 'polar'){
-        return urls['country'] + 'Antarctica';
-    } else if(urls[nameOfSelector].includes('.json')){
-        return urls[nameOfSelector];
+        return urls.get(selectsNames[2]) + 'Antarctica';
+    } else if(urls.get(selectsNames[indexOfCurrentSelector]).includes('.json')){
+        return urls.get(selectsNames[indexOfCurrentSelector]);
     } else {
-        return urls[nameOfSelector] + valueOfSelector;
+        return urls.get(selectsNames[indexOfCurrentSelector]) + valueOfSelector;
     }
 }
 
@@ -128,7 +129,7 @@ function selectListener(){
     hideNextSelects(indexOfCurrentSelector);
     showLoadingIcon();
     
-    url = getUrl(currentSelect.name, currentSelect.value);
+    url = getUrl(currentSelect.name, currentSelect.value, indexOfCurrentSelector);
     setTimeout(()=>{
         getData(url, currentSelect);
     }, 1500);
