@@ -20,7 +20,7 @@ function showNextSelect(index){
 }
 
 function createDefaultOption(currentSelect){
-    let selectedOption = document.createElement('option');
+    const selectedOption = document.createElement('option');
     selectedOption.disabled = true;
     selectedOption.hidden = true;
     selectedOption.selected = true;
@@ -28,23 +28,14 @@ function createDefaultOption(currentSelect){
     return selectedOption; 
 }
 
-function createOptions(data, field=null){
-    let options;
-    if(field){
-        options = data[field].map(element => {
-            let option = document.createElement('option');
-            option.value = element;
-            option.text = element;
-            return option;
-        });
-    } else {
-        options = data.map(element => {
-            let option = document.createElement('option');
-            option.value = element.name;
-            option.text = element.name;
-            return option;
-        });
-    }
+function createOptions(data){
+    const options = data.map(element => {
+        const option = document.createElement('option');
+        option.value = element.name;
+        option.text = element.name;
+        return option;
+    });
+    
     return options;
 }
 
@@ -64,15 +55,15 @@ function hideLoadingIcon(){
 
 function showCountryInfo(data){
     data.map(item => {
-        let {alpha2Code, capital, population, nativeName, flag} = item;
-        let element = document.createElement('p');
+        const {alpha2Code, capital, population, nativeName, flag} = item;
+        const element = document.createElement('p');
 
         element.innerText = 
             `Country code: ${alpha2Code}\nCapital: ${capital}
             Population: ${population}\nNative name: ${nativeName}`;
         countryInfo.appendChild(element);
 
-        let flagImage = document.createElement('img');
+        const flagImage = document.createElement('img');
         flagImage.display="block";
         flagImage.style.width="40%";
         flagImage.src = flag;
@@ -92,11 +83,11 @@ function getUrl(nameOfSelector, valueOfSelector){
 }
 
 function selectListener(){
-    let valueOfCurrentSelector = this.value;
-    let indexOfCurrentSelector = selectsNames.indexOf(this.name);
-    let indexOfNextSelector = indexOfCurrentSelector + 1;
-    let nameOfCurrentSelector = selectsNames[selectsNames.indexOf(this.name)];
-    let nameOfNextSelector = selectsNames[selectsNames.indexOf(this.name)+1];
+    const valueOfCurrentSelector = this.value;
+    const indexOfCurrentSelector = selectsNames.indexOf(this.name);
+    const indexOfNextSelector = indexOfCurrentSelector + 1;
+    const nameOfCurrentSelector = selectsNames[selectsNames.indexOf(this.name)];
+    const nameOfNextSelector = selectsNames[selectsNames.indexOf(this.name)+1];
     let url;
 
     hideNextSelects(indexOfCurrentSelector);
@@ -109,18 +100,20 @@ function selectListener(){
             .then(res => res.json())
             .then(data => {
                 hideLoadingIcon();
+
+                //if user chose polar-region or it is last selector
                 if(valueOfCurrentSelector!== 'polar' && nameOfNextSelector){
                     addOptions(selects[indexOfNextSelector], 
                         createDefaultOption(nameOfNextSelector));
                     
                     showNextSelect(indexOfNextSelector);
-                    let field;
+                    
+                    //get data from local json file
                     if(nameOfCurrentSelector==='region'){
-                        field = valueOfCurrentSelector;
-                    } else {
-                        field = null;
+                        data = data[valueOfCurrentSelector];
                     }
-                    let options = createOptions(data, field);
+
+                    const options = createOptions(data);
                     addOptions(selects[selectsNames.indexOf(nameOfNextSelector)], ...options);
                 
                 } else { 
