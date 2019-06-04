@@ -40,9 +40,11 @@ function createOptions(data){
 }
 
 function addOptions(selector, ...options){
+    const fragment = document.createDocumentFragment();
     options.forEach(option => {
-        selector.appendChild(option);
+        fragment.appendChild(option);
     })
+    selector.appendChild(fragment);
 }
 
 function showLoadingIcon(){
