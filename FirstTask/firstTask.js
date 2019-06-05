@@ -13,14 +13,17 @@ import {
     countryInfo
 } from './displayHTMLElements.js'; 
 
-const selectsNames = Array.from(selects).map((element)=>{
-    return {'name' : element.name}
-    });
+// const selectsNames = Array.from(selects).map((element)=>{
+//     return {'name' : element.name}
+//     });
+console.log(Array.from(selects));
+console.log(_.values(selects));
+const selectsNames = _.map(_.values(selects), element=> ({'name' : element.name}));
 
 const urls = new WeakMap([
-    [selectsNames[0], './subregions.json'],
-    [selectsNames[1], 'https://restcountries.eu/rest/v2/subregion/'],
-    [selectsNames[2], 'https://restcountries.eu/rest/v2/name/']
+    [_.get(selectsNames, 0), './subregions.json'],
+    [_.get(selectsNames, 1), 'https://restcountries.eu/rest/v2/subregion/'],
+    [_.get(selectsNames, 2), 'https://restcountries.eu/rest/v2/name/']
 ]);
 
 function showCountryInfo(data){
