@@ -13,21 +13,16 @@ import {
     countryInfo
 } from './displayHTMLElements.js'; 
 
-// const selectsNames = Array.from(selects).map((element)=>{
-//     return {'name' : element.name}
-//     });
-console.log(Array.from(selects));
-console.log(_.values(selects));
 const selectsNames = _.map(_.values(selects), element=> ({'name' : element.name}));
 
 const urls = new WeakMap([
-    [_.get(selectsNames, 0), './subregions.json'],
-    [_.get(selectsNames, 1), 'https://restcountries.eu/rest/v2/subregion/'],
-    [_.get(selectsNames, 2), 'https://restcountries.eu/rest/v2/name/']
+    [selectsNames[0], './subregions.json'],
+    [selectsNames[1], 'https://restcountries.eu/rest/v2/subregion/'],
+    [selectsNames[2], 'https://restcountries.eu/rest/v2/name/']
 ]);
 
 function showCountryInfo(data){
-    data.map(item => {
+    _.map(data, item => {
         const {alpha2Code, capital, population, nativeName, flag} = item;
         const element = document.createElement('p');
 
@@ -46,7 +41,7 @@ function showCountryInfo(data){
 }
 
 function showData(data, currentSelect){
-    const indexOfNextSelector = Array.from(selects).indexOf(currentSelect) + 1;
+    const indexOfNextSelector = _.indexOf(_.values(selects), currentSelect) + 1;
     hideLoadingIcon();
     const nameOfNextSelector = selectsNames[indexOfNextSelector] ?
         selectsNames[indexOfNextSelector].name : false;
@@ -79,7 +74,7 @@ function getData(url, currentSelect){
         })
 }
 
-function getUrl(nameOfSelector, valueOfSelector, indexOfCurrentSelector){
+function getUrl(valueOfSelector, indexOfCurrentSelector){
     if(valueOfSelector === 'polar'){
         return urls.get(selectsNames[selectsNames.length-1]) + 'Antarctica';
     } else if(urls.get(selectsNames[indexOfCurrentSelector]).includes('.json')){
@@ -91,23 +86,20 @@ function getUrl(nameOfSelector, valueOfSelector, indexOfCurrentSelector){
 
 function selectListener(){
     const currentSelect = this;
-    const indexOfCurrentSelector = Array.from(selects).indexOf(this);
+    const indexOfCurrentSelector = _.indexOf(_.values(selects), this);
     let url;
 
     hideNextSelects(indexOfCurrentSelector);
     showLoadingIcon();
     
-    url = getUrl(currentSelect.name, currentSelect.value, indexOfCurrentSelector);
+    url = getUrl(currentSelect.value, indexOfCurrentSelector);
     setTimeout(()=>{
         getData(url, currentSelect);
     }, 1500);
 }
 
 function main(){
-    selects.forEach(select => select.addEventListener('change', selectListener));
+    _.forEach(selects, select => select.addEventListener('change', selectListener));
 }
 
 main();
-
-
-
