@@ -9,13 +9,25 @@ function createDefaultOption(currentSelect){
 }
 
 function createOptions(data){
-    const options = data.map(element => {
+    //as we may have duplicates of subregions we use Set collection
+    let optionsData = new Set(
+        _.map(data, element => {
+        //depends on subregion or region it is return what is not undefined
+        let {subregion, name} = element;
+        return subregion || name;
+        })
+    );
+   
+    // you can take data for options in this way, data is object of objectsn
+    // which has only one property, we do array of those properties and get single element
+    // optionsData = new Set(_.map(data, element=>Object.values(element)[0]));
+    const options = [];
+    optionsData.forEach(element => {
         const option = document.createElement('option');
-        option.value = element.name;
-        option.text = element.name;
-        return option;
+        option.value = element;
+        option.text = element;
+        options.push(option);
     });
-    
     return options;
 }
 

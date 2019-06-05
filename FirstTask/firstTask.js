@@ -16,7 +16,7 @@ import {
 const selectsNames = _.map(_.values(selects), element=> ({'name' : element.name}));
 
 const urls = new WeakMap([
-    [selectsNames[0], './subregions.json'],
+    [selectsNames[0], 'https://restcountries.eu/rest/v2/region/'],
     [selectsNames[1], 'https://restcountries.eu/rest/v2/subregion/'],
     [selectsNames[2], 'https://restcountries.eu/rest/v2/name/']
 ]);
@@ -50,12 +50,7 @@ function showData(data, currentSelect){
             createDefaultOption(nameOfNextSelector));
         
         showNextSelect(indexOfNextSelector);
-        
-        //get data from local json file
-        if(currentSelect.name==='region'){
-            data = data[currentSelect.value];
-        }
-    
+       
         const options = createOptions(data);
         addOptions(selects[indexOfNextSelector], ...options);
     } else {
@@ -75,24 +70,31 @@ function getData(url, currentSelect){
 }
 
 function getUrl(valueOfSelector, indexOfCurrentSelector){
+    let url;
+    //special case for Antarctica
     if(valueOfSelector === 'polar'){
         return urls.get(selectsNames[selectsNames.length-1]) + 'Antarctica';
-    } else if(urls.get(selectsNames[indexOfCurrentSelector]).includes('.json')){
-        return urls.get(selectsNames[indexOfCurrentSelector]);
     } else {
-        return urls.get(selectsNames[indexOfCurrentSelector]) + valueOfSelector;
+        url = urls.get(selectsNames[indexOfCurrentSelector]) + valueOfSelector;
+        if(selectsNames[indexOfCurrentSelector].name === 'region'){
+            url += "?fields=subregion";
+        } else if(selectsNames[indexOfCurrentSelector].name === 'subregion'){
+            url += "?fields=name";
+        }
+        //if url for country just return url
     }
+    return url;
 }
 
 function selectListener(){
     const currentSelect = this;
     const indexOfCurrentSelector = _.indexOf(_.values(selects), this);
-    let url;
-
+   
     hideNextSelects(indexOfCurrentSelector);
     showLoadingIcon();
     
-    url = getUrl(currentSelect.value, indexOfCurrentSelector);
+    let url = getUrl(currentSelect.value, indexOfCurrentSelector);
+    
     setTimeout(()=>{
         getData(url, currentSelect);
     }, 1500);
