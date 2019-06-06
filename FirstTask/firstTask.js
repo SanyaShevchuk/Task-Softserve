@@ -1,142 +1,123 @@
-///////////////////FIRST TASK//////////////////////////
-let regions = document.querySelector('#task1 select[name="region"]');
-let subregions = document.querySelector('#task1 select[name="subregion"]');
-let countries = document.querySelector('#task1 select[name="country"');
-let countryInfo = document.querySelector('#task1 #country-info');
-let loadingIcon = document.querySelector('#wrapper');
+import {
+    createDefaultOption, 
+    createOptions, 
+    addOptions
+} from './selectsOptions.js';
 
-regions.addEventListener('change', function(){
-    loadingIcon.style.display = "block";
-    let region = this.value;
-    subregions.innerHTML = "";
-    subregions.style.display = "none";
-    countries.style.display = "none";
-    countries.innerHTML = "";
-    countryInfo.innerHTML = "";
-    
-    setTimeout(function(){
-        fetch('./subregions.json')
-            .then(res => res.json())
-            .then(data => {
-                loadingIcon.style.display = "none";
-                let selectedOption = document.createElement('option');
-                selectedOption.disabled = true;
-                selectedOption.hidden = true;
-                selectedOption.selected = true;
-                selectedOption.text = "Choose subregion"; 
-                subregions.appendChild(selectedOption);
-            
-                if(!data[region][0]) {
-                    subregions.style.display = "none";
-                    countries.style.display = "inline-block";
-                    subregions.dispatchEvent(new Event('change'));
-                } else {
-                    subregions.style.display = "inline-block";
-                    countries.style.display = "none";
-                }
+import {
+    hideLoadingIcon, 
+    hideNextSelects, 
+    showNextSelect, 
+    showLoadingIcon, 
+    selects, 
+    countryInfo
+} from './displayHTMLElements.js'; 
 
-                data[region].map(subregion => {
-                    let option = document.createElement('option');
-                    option.value = subregion;
-                    option.text = subregion;
-                    subregions.appendChild(option);
-                })        
-            })
-            .catch(e => {
-                console.log(e);
-            })
-    }, 1500); 
-});
+const selectsNames = _.map(_.values(selects), element=> ({'name' : element.name}));
 
-subregions.addEventListener('change', function(){
-    loadingIcon.style.display = "block";
-    if(regions.value == "polar"){
-        loadingIcon.style.display = "none";
-        let selectedOption = document.createElement('option');
-        selectedOption.disabled = true;
-        selectedOption.hidden = true;
-        selectedOption.text = "Choose country"; 
-        selectedOption.selected = true;
-        countries.appendChild(selectedOption);
-        
-        let option = document.createElement('option');
-        option.value = 'Antarctica'
-        option.text = 'Antarctica';
-        countries.appendChild(option);
-        return;
+const urls = new WeakMap([
+    [selectsNames[0], 'https://restcountries.eu/rest/v2/region/'],
+    [selectsNames[1], 'https://restcountries.eu/rest/v2/subregion/'],
+    [selectsNames[2], 'https://restcountries.eu/rest/v2/name/'],
+    [selectsNames[3], 'https://restcountries.eu/rest/v2/name/']
+]);
+
+function nestedObjectToArray(obj) {
+    if (typeof(obj) !== "object"){
+        return [obj];
     }
+    var result = [];
+    if (obj.constructor === Array){
+        obj.map(function(item) {
+            result = result.concat(nestedObjectToArray(item));
+        });
+    } else {
+        Object.keys(obj).map(function(key) {
+            if(obj[key]) {
+                var chunk = nestedObjectToArray(obj[key]);
+                chunk.map(function(item) {
+                    result.push(item+"  ");
+                });
+            } else {
+                result.push(key + "  ");
+            }
+        });
+    }
+    return result;
+}
 
-    let subregion = this.value;
-    let url = `https://restcountries.eu/rest/v2/subregion/${subregion}`;
+function showCountryInfo(data){
+    let p = document.createElement('p');
+    let info = nestedObjectToArray(data);
+    info.forEach(element => {
+        p.innerText+=element +"\n";
+    })
+    countryInfo.appendChild(p);
+}
 
-    countries.style.display = "none";
-    countries.innerHTML = "";
-    countryInfo.innerHTML = "";
+function showData(data, currentSelect){
+    const indexOfNextSelector = _.indexOf(_.values(selects), currentSelect) + 1;
+    hideLoadingIcon();
+    const nameOfNextSelector = selectsNames[indexOfNextSelector] ?
+        selectsNames[indexOfNextSelector].name : false;
 
-    setTimeout(function(){
-        fetch(url)
-            .then(res => res.json())
-            .then(data => {
-                loadingIcon.style.display = "none";
-                countries.style.display = "inline-block";
-                let selectedOption = document.createElement('option');
+    if(nameOfNextSelector){
+        addOptions(selects[indexOfNextSelector], 
+            createDefaultOption(nameOfNextSelector));
+        
+        showNextSelect(indexOfNextSelector);
 
-                selectedOption.disabled = true;
-                selectedOption.hidden = true;
-                selectedOption.text = "Choose country"; 
-                selectedOption.selected = true;
-                countries.appendChild(selectedOption);
+        let options = createOptions(data, nameOfNextSelector);   
 
-                data.map(country => {
-                    let option = document.createElement('option');
-                    option.value = country.name;
-                    option.text = country.name;
-                    countries.appendChild(option);
-                })
-            })
-            .catch(e => {
-                console.log(e);
-            })
+        addOptions(selects[indexOfNextSelector], ...options);
+    } else {
+        showCountryInfo(data);
+    }
+}
+
+function getData(url, currentSelect){
+    fetch(url)
+        .then(res => res.json())
+        .then(data => { 
+            showData(data, currentSelect);
+        })
+        .catch(error => {
+            console.log(error);
+        })
+}
+
+function getUrl(valueOfSelector, indexOfCurrentSelector){
+    let url = urls.get(selectsNames[indexOfCurrentSelector]) + valueOfSelector;
+
+    if(selectsNames[indexOfCurrentSelector].name === 'region'){
+        url += "?fields=subregion";
+    } else if(selectsNames[indexOfCurrentSelector].name === 'subregion'){
+        url += "?fields=name";
+    } else if(selectsNames[indexOfCurrentSelector].name === 'country-property'){
+        const countryValue = document.querySelector('select[name="country"]').value;
+        url = urls.get(selectsNames[indexOfCurrentSelector])
+            + countryValue + "?fields=" + valueOfSelector;
+    } 
+   
+    return url;
+}
+
+function selectListener(){
+    const currentSelect = this;
+    const indexOfCurrentSelector = _.indexOf(_.values(selects), this);
+   
+    hideNextSelects(indexOfCurrentSelector);
+    showLoadingIcon();
+    
+    let url = getUrl(currentSelect.value, indexOfCurrentSelector);
+    
+    setTimeout(()=>{
+        getData(url, currentSelect);
     }, 1500);
-})
+}
 
-countries.addEventListener('change', function(){
-    loadingIcon.style.display = "block";
-    let country = this.value;
-    let url = `https://restcountries.eu/rest/v2/name/${country}`;
-    countryInfo.innerHTML = "";
+function main(){
+    _.forEach(selects, select => select.addEventListener('change', selectListener));
+}
 
-    setTimeout(function(){
-        fetch(url)
-            .then(res => res.json())
-            .then(data => {
-                loadingIcon.style.display = "none";
-                data.map(item => {
-                    let {alpha2Code, capital, population, nativeName, flag} = item;
-                    let element = document.createElement('p');
-
-                    element.innerText = 
-                        `Country code: ${alpha2Code}\nCapital: ${capital}
-                        Population: ${population}\nNative name: ${nativeName}`;
-                    countryInfo.appendChild(element);
-
-                    let flagImage = document.createElement('img');
-                    flagImage.display="block";
-                    flagImage.style.width="40%";
-                    flagImage.src = flag;
-
-                    countryInfo.appendChild(flagImage);
-                })
-            })
-            .catch(e => {
-                console.log(e);
-            })
-    }, 1500);
-})
-
-// // function sum(a, ...args){
-//     console.log(args);
-//     let result = args.reduce((a, b) => a+b);
-//     return result + a;
-// }
-// console.log(sum(5, ...array));
+main();

@@ -1,40 +1,84 @@
 {
     "europe":[
-        "Northern Europe", 
-        "Southern Europe",
-        "Western Europe",
-        "Eastern Europe"
+        {
+            "name": "Northern Europe"
+        }, 
+        {
+            "name": "Southern Europe"
+        },
+        {
+            "name": "Western Europe"
+        },
+        {
+            "name": "Eastern Europe"
+        }
     ],
 
     "asia":[ 
-        "Southern Asia",
-        "Western Asia",
-        "Eastern Asia",
-        "South-Eastern Asia",
-        "Central Asia"
+        {
+            "name": "Southern Asia"
+        }, 
+        {
+            "name": "Western Asia"
+        },
+        {
+            "name": "Eastern Asia"
+        },
+        {
+            "name": "South-Eastern Asia"
+        },
+        {
+            "name": "Central Asia"
+        }
     ],
 
     "oceania":[
-        "Polynesia", 
-        "Australia and New Zealand",
-        "Melanesia",
-        "Micronesia"
+        {
+            "name": "Polynesia"
+        }, 
+        {
+            "name": "Australia and New Zealand"
+        },
+        {
+            "name": "Melanesia"
+        },
+        {
+            "name": "Micronesia"
+        }
     ],
 
     "americas":[
-        "Caribbean", 
-        "South America",
-        "Central America",
-        "Northern America"
+        {
+            "name": "Caribbean"
+        }, 
+        {
+            "name": "South America"
+        },
+        {
+            "name": "Central America"
+        },
+        {
+            "name": "Northern America"
+        }  
     ],
 
     "africa":[
-        "Northern Africa", 
-        "Western Africa",
-        "Middle Africa",
-        "Southern Africa",
-        "Eastern Africa"
+        {
+            "name": "Northern Africa"
+        }, 
+        {
+            "name": "Western Africa"
+        },
+        {
+            "name": "Middle Africa"
+        },
+        {
+            "name": "Southern Africa"
+        },
+        {
+            "name": "Eastern Africa"
+        }        
     ],
 
-    "polar": [""]
+    "polar": [{}]
 }
