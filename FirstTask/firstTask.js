@@ -22,9 +22,36 @@ const urls = new WeakMap([
     [selectsNames[3], 'https://restcountries.eu/rest/v2/name/']
 ]);
 
+function nestedObjectToArray(obj) {
+    if (typeof(obj) !== "object"){
+        return [obj];
+    }
+    var result = [];
+    if (obj.constructor === Array){
+        obj.map(function(item) {
+            result = result.concat(nestedObjectToArray(item));
+        });
+    } else {
+        Object.keys(obj).map(function(key) {
+            if(obj[key]) {
+                var chunk = nestedObjectToArray(obj[key]);
+                chunk.map(function(item) {
+                    result.push(item+"  ");
+                });
+            } else {
+                result.push(key + "  ");
+            }
+        });
+    }
+    return result;
+}
+
 function showCountryInfo(data){
     let p = document.createElement('p');
-    p.innerHTML = `${Object.values(data[0])}`;
+    let info = nestedObjectToArray(data);
+    info.forEach(element => {
+        p.innerText+=element +"\n";
+    })
     countryInfo.appendChild(p);
 }
 
@@ -39,21 +66,9 @@ function showData(data, currentSelect){
             createDefaultOption(nameOfNextSelector));
         
         showNextSelect(indexOfNextSelector);
-        let options;
-        
-        if(nameOfNextSelector==='country-property'){
-            let optionsData = Object.keys(data[0]);
-            
-            options = [];
-            optionsData.forEach(element => {
-                const option = document.createElement('option');
-                option.value = element;
-                option.text = element;
-                options.push(option);
-            });
-        } else {
-            options = createOptions(data);
-        }   
+
+        let options = createOptions(data, nameOfNextSelector);   
+
         addOptions(selects[indexOfNextSelector], ...options);
     } else {
         showCountryInfo(data);
@@ -79,12 +94,11 @@ function getUrl(valueOfSelector, indexOfCurrentSelector){
     } else if(selectsNames[indexOfCurrentSelector].name === 'subregion'){
         url += "?fields=name";
     } else if(selectsNames[indexOfCurrentSelector].name === 'country-property'){
+        const countryValue = document.querySelector('select[name="country"]').value;
         url = urls.get(selectsNames[indexOfCurrentSelector])
-            + document.querySelector('select[name="country"]').value + "?fields=" 
-            + valueOfSelector;
+            + countryValue + "?fields=" + valueOfSelector;
     } 
-    //if url for country just return url
-    
+   
     return url;
 }
 
