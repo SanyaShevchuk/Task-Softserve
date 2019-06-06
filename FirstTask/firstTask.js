@@ -18,26 +18,14 @@ const selectsNames = _.map(_.values(selects), element=> ({'name' : element.name}
 const urls = new WeakMap([
     [selectsNames[0], 'https://restcountries.eu/rest/v2/region/'],
     [selectsNames[1], 'https://restcountries.eu/rest/v2/subregion/'],
-    [selectsNames[2], 'https://restcountries.eu/rest/v2/name/']
+    [selectsNames[2], 'https://restcountries.eu/rest/v2/name/'],
+    [selectsNames[3], 'https://restcountries.eu/rest/v2/name/']
 ]);
 
 function showCountryInfo(data){
-    _.map(data, item => {
-        const {alpha2Code, capital, population, nativeName, flag} = item;
-        const element = document.createElement('p');
-
-        element.innerText = 
-            `Country code: ${alpha2Code}\nCapital: ${capital}
-            Population: ${population}\nNative name: ${nativeName}`;
-        countryInfo.appendChild(element);
-
-        const flagImage = document.createElement('img');
-        flagImage.display="block";
-        flagImage.style.width="40%";
-        flagImage.src = flag;
-
-        countryInfo.appendChild(flagImage);
-    })
+    let p = document.createElement('p');
+    p.innerHTML = `${Object.values(data[0])}`;
+    countryInfo.appendChild(p);
 }
 
 function showData(data, currentSelect){
@@ -45,13 +33,27 @@ function showData(data, currentSelect){
     hideLoadingIcon();
     const nameOfNextSelector = selectsNames[indexOfNextSelector] ?
         selectsNames[indexOfNextSelector].name : false;
-    if(currentSelect.value !== 'polar' && nameOfNextSelector){
+
+    if(nameOfNextSelector){
         addOptions(selects[indexOfNextSelector], 
             createDefaultOption(nameOfNextSelector));
         
         showNextSelect(indexOfNextSelector);
-       
-        const options = createOptions(data);
+        let options;
+        
+        if(nameOfNextSelector==='country-property'){
+            let optionsData = Object.keys(data[0]);
+            
+            options = [];
+            optionsData.forEach(element => {
+                const option = document.createElement('option');
+                option.value = element;
+                option.text = element;
+                options.push(option);
+            });
+        } else {
+            options = createOptions(data);
+        }   
         addOptions(selects[indexOfNextSelector], ...options);
     } else {
         showCountryInfo(data);
@@ -70,19 +72,19 @@ function getData(url, currentSelect){
 }
 
 function getUrl(valueOfSelector, indexOfCurrentSelector){
-    let url;
-    //special case for Antarctica
-    if(valueOfSelector === 'polar'){
-        return urls.get(selectsNames[selectsNames.length-1]) + 'Antarctica';
-    } else {
-        url = urls.get(selectsNames[indexOfCurrentSelector]) + valueOfSelector;
-        if(selectsNames[indexOfCurrentSelector].name === 'region'){
-            url += "?fields=subregion";
-        } else if(selectsNames[indexOfCurrentSelector].name === 'subregion'){
-            url += "?fields=name";
-        }
-        //if url for country just return url
-    }
+    let url = urls.get(selectsNames[indexOfCurrentSelector]) + valueOfSelector;
+
+    if(selectsNames[indexOfCurrentSelector].name === 'region'){
+        url += "?fields=subregion";
+    } else if(selectsNames[indexOfCurrentSelector].name === 'subregion'){
+        url += "?fields=name";
+    } else if(selectsNames[indexOfCurrentSelector].name === 'country-property'){
+        url = urls.get(selectsNames[indexOfCurrentSelector])
+            + document.querySelector('select[name="country"]').value + "?fields=" 
+            + valueOfSelector;
+    } 
+    //if url for country just return url
+    
     return url;
 }
 

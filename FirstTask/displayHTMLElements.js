@@ -1,5 +1,5 @@
 const selects = document.querySelectorAll('#task1 select');
-const countryInfo = document.querySelector('#country-info');
+const countryInfo = document.querySelector('#country-property-info');
 
 function hideNextSelects(indexOfCurrentSelector){
     for(let i = indexOfCurrentSelector+1; i < selects.length; i++){

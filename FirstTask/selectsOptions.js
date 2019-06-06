@@ -17,7 +17,7 @@ function createOptions(data){
         return subregion || name;
         })
     );
-   
+
     // you can take data for options in this way, data is object of objectsn
     // which has only one property, we do array of those properties and get single element
     // optionsData = new Set(_.map(data, element=>Object.values(element)[0]));
