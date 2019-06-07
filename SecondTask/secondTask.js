@@ -1,13 +1,47 @@
-let email = document.querySelector('form#task2 input[name="e-mail"]');
-let password = document.querySelector('form#task2 input[name="password"]');
-let confirmPassword = document.querySelector('form#task2 input[name="confirm-password"]');
-let emailErrors = document.querySelector('form#task2 #emailErrors');
-let passwordErrors = document.querySelector('form#task2 #passwordErrors');
-let logInBtn = document.querySelector('form#task2 #submit');
+let email = document.querySelector('#task2 input[name="e-mail"]');
+let password = document.querySelector('#task2 input[name="password"]');
+let confirmPassword = document.querySelector('#task2 input[name="confirm-password"]');
+let emailErrors = document.querySelector('#emailErrors');
+let passwordErrors = document.querySelector('#passwordErrors');
+let logInBtn = document.querySelector('#submitBtn');
 
-$('form#task2').submit(function(e){
+document.getElementById('task2').addEventListener('submit', function(e){
     e.preventDefault();
-})
+});
+
+function isContaintDot(value){
+    return value.indexOf('.') < 0;
+}
+
+function isContainAt(value){
+    return value.indexOf('@') < 0;
+}
+
+function isCorrectEmailFormat(value){
+    return !emailFormat.test(value);
+}
+
+function isEmpty(value){
+    return value.length===0;
+}
+
+const emailFuncValidation = [isEmpty, isContainAt, isContaintDot, isCorrectEmailFormat];
+
+const emailErrorsMessage = {
+    'isEmpty': 'Email is empty!',
+    'isContainAt': '@ is absent!', 
+    'isContaintDot': '. is absent!', 
+    'isCorrectEmailFormat': 'Wrong email format! example@gmail.com'
+}
+
+const emailErrorsRules = new Map([
+    [isEmpty, 'Email is empty!'],
+    [isContainAt, '@ is absent!'],
+    [isContaintDot, '. is absent!'], 
+    [isCorrectEmailFormat, 'Wrong email format! example@gmail.com']
+])
+
+const emailFormat = /.*[a-zA-Z0-9][@].*[a-zA-Z0-9][.].*[a-zA-Z0-9]/;
 
 logInBtn.addEventListener('click', function(){
     
@@ -34,18 +68,22 @@ logInBtn.addEventListener('click', function(){
     }
 })
 
-email.onblur = function(){
-    if(email.value.length===0){
-        emailErrors.innerHTML = "Email is empty!"
-    } else if(email.value.indexOf('@') < 0 ){
-        emailErrors.innerHTML = "@ is absent!";
-    } else if(email.value.indexOf('.') < 0 ){
-        emailErrors.innerHTML = ". is absent!"
-    } else if(!/.*[a-zA-Z0-9][@].*[a-zA-Z0-9][.].*[a-zA-Z0-9]/.test(email.value)){
-        emailErrors.innerHTML = "Wrong email format! example@gmail.com";
-    }  else {
-        emailErrors.innerHTML = "";
+function getEmailError(email){
+    
+    for(let [errorFunc, errorMsg] of emailErrorsRules){
+        if(errorFunc(email)){
+            return errorMsg;
+        }
     }
+
+    //if there is no errors return empty string of errors
+    return "";
+}
+
+email.onblur = function(){
+    let message = "";
+    message = getEmailError(email.value);
+    emailErrors.innerHTML = message;
 }
 
 password.onblur = function(){
