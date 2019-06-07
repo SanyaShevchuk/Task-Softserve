@@ -9,39 +9,53 @@ document.getElementById('task2').addEventListener('submit', function(e){
     e.preventDefault();
 });
 
-function isContaintDot(value){
-    return value.indexOf('.') < 0;
+// const emailFuncValidation = [isEmpty, isContainAt, isContaintDot, isCorrectEmailFormat];
+
+// const emailErrorsMessage = {
+//     'isEmpty': 'Email is empty!',
+//     'isContainAt': '@ is absent!', 
+//     'isContaintDot': '. is absent!', 
+//     'isCorrectEmailFormat': 'Wrong email format! example@gmail.com'
+// }
+
+const emailFormat = /.*[a-zA-Z0-9][@].*[a-zA-Z0-9][.].*[a-zA-Z0-9]/;
+const sizeOfPassword = 8;
+
+const emailErrorsRules = new Map([
+    [isContainAt, '@ is absent!'],
+    [isContainDot, '. is absent!'], 
+    [isCorrectEmailFormat, 'Wrong email format! example@gmail.com']
+]);
+
+const passwordErrorsRules = new Map([
+    [isCorrectSize, `Password has to contain more than ${sizeOfPassword} symbols!`],
+    [isContainCapitalLetter, 'Password has to contain atleast one capital letter!'],
+    [isContainDigit, 'Password has to contain atleast one digit!']
+])
+
+function isContainDot(value){
+    return value.indexOf('.') > 0;
 }
 
 function isContainAt(value){
-    return value.indexOf('@') < 0;
+    return value.indexOf('@') > 0;
 }
 
 function isCorrectEmailFormat(value){
-    return !emailFormat.test(value);
+    return emailFormat.test(value);
 }
 
-function isEmpty(value){
-    return value.length===0;
+function isCorrectSize(value){
+    return value.length>sizeOfPassword;
 }
 
-const emailFuncValidation = [isEmpty, isContainAt, isContaintDot, isCorrectEmailFormat];
-
-const emailErrorsMessage = {
-    'isEmpty': 'Email is empty!',
-    'isContainAt': '@ is absent!', 
-    'isContaintDot': '. is absent!', 
-    'isCorrectEmailFormat': 'Wrong email format! example@gmail.com'
+function isContainCapitalLetter(value){
+    return /[A-Z]/.test(value);
 }
 
-const emailErrorsRules = new Map([
-    [isEmpty, 'Email is empty!'],
-    [isContainAt, '@ is absent!'],
-    [isContaintDot, '. is absent!'], 
-    [isCorrectEmailFormat, 'Wrong email format! example@gmail.com']
-])
-
-const emailFormat = /.*[a-zA-Z0-9][@].*[a-zA-Z0-9][.].*[a-zA-Z0-9]/;
+function isContainDigit(value){
+    return /\d/.test(value);
+}
 
 logInBtn.addEventListener('click', function(){
     
@@ -69,9 +83,8 @@ logInBtn.addEventListener('click', function(){
 })
 
 function getEmailError(email){
-    
-    for(let [errorFunc, errorMsg] of emailErrorsRules){
-        if(errorFunc(email)){
+    for(let [rule, errorMsg] of emailErrorsRules){
+        if(!rule(email)){
             return errorMsg;
         }
     }
@@ -80,22 +93,24 @@ function getEmailError(email){
     return "";
 }
 
+function getPasswordError(password){
+    for(let [rule, errorMsg] of passwordErrorsRules){
+        if(!rule(password)){
+            return errorMsg;
+        }
+    }
+    //if there is no errors return empty string of errors
+    return "";
+}
+
 email.onblur = function(){
-    let message = "";
-    message = getEmailError(email.value);
+    let message = getEmailError(email.value);
     emailErrors.innerHTML = message;
 }
 
 password.onblur = function(){
-    if(password.value.length<8){
-        passwordErrors.innerHTML = "Password has to contain more than 8 symbols!";
-    } else if(!/[A-Z]/.test(password.value)){
-        passwordErrors.innerHTML = "Password has to contain atleast one capital letter!";
-    } else if(!(/\d/.test(password.value))){
-        passwordErrors.innerHTML = "Password has to contain atleast one digit!";
-    } else {
-        passwordErrors.innerHTML = "";
-    }
+    let message = getPasswordError(password.value);
+    passwordErrors.innerHTML = message;
 }
 
 confirmPassword.oninput = function(){
