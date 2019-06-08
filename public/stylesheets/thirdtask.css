@@ -1,0 +1,75 @@
+#piramidAnimation{
+    margin: auto;
+    margin-top: 150px;
+    display: block;
+    width: 100px;
+    height: 100px;;
+    position: relative;
+    animation-name: rotation;
+    animation-duration: 5s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+
+#piramidAnimation div{
+    margin-left: 50%;
+    position: absolute;
+    width: 40px;
+    height: 0px;
+    border: 1px solid black;
+}
+
+#piramidAnimation #firstLine{
+    border-style: dashed;
+    width: 30px;
+    opacity: 0.4;
+    transform: translateX(27%) rotate(25deg) translateY(-450%);
+}
+#piramidAnimation #secondLine{
+    transform: translateX(0%) rotate(-24deg) translateY(437%);
+} 
+#piramidAnimation #thirdLine{
+    border-style: dashed;
+    opacity: 0.4;
+    transform: translateX(-56%) rotate(-23deg) translateY(-350%);
+}
+#piramidAnimation #fourthLine{
+    width: 30px;
+    transform: translateX(-67%) rotate(25deg) translateY(450%);
+}
+#piramidAnimation #fifthLine{
+    width: 113px;
+    top: -53%;
+    left: -62%;
+    transform: rotate(-71deg);
+}
+#piramidAnimation #sixthLine{
+    width: 120px;
+    top: -45%;
+    left: -51%;
+    transform: rotate(-86.5deg);
+}
+#piramidAnimation #seventhLine{
+    border-style: dashed;
+    width: 90px;
+    top: -60%;
+    left: -32%;
+    opacity: 0.4;
+    transform: rotate(-90deg);
+}
+#piramidAnimation #eigthLine{
+    position: absolute;
+    width: 107px;
+    top: -54%;
+    left: -26%;
+    transform: rotate(-105deg);
+}
+
+@keyframes rotation{
+    0% {
+        transform: rotateY(0deg);
+    }
+    100%{
+        transform: rotateY(360deg);
+    }
+}
