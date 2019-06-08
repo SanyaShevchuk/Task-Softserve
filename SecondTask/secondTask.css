@@ -1,0 +1,27 @@
+#task2{
+    margin: auto;
+    display: block;
+    width: 300px;
+}
+
+#task2 input{
+    display: block;
+    width: 100%;
+}
+
+#task2 label{
+    text-align: center;
+    display: block;
+}
+
+#task2 button{
+    margin: auto;
+    display: block;
+    margin-top: 2%;
+    
+}
+
+.errors{
+    color: red;
+    font-style: italic;
+}

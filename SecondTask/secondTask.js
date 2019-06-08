@@ -1,62 +1,59 @@
-let email = document.querySelector('form#task2 input[name="e-mail"]');
-let password = document.querySelector('form#task2 input[name="password"]');
-let confirmPassword = document.querySelector('form#task2 input[name="confirm-password"]');
-let emailErrors = document.querySelector('form#task2 #emailErrors');
-let passwordErrors = document.querySelector('form#task2 #passwordErrors');
-let logInBtn = document.querySelector('form#task2 #submit');
+import getEmailError from './emailValidation.js';
+import getPasswordError from './passwordValidation.js';
 
-$('form#task2').submit(function(e){
+const email = document.querySelector('#task2 input[name="e-mail"]');
+const password = document.querySelector('#task2 input[name="password"]');
+const confirmPassword = document.querySelector('#task2 input[name="confirm-password"]');
+const logInBtn = document.querySelector('#submitBtn');
+
+document.getElementById('task2').addEventListener('submit', function(e){
     e.preventDefault();
-})
+});
 
-logInBtn.addEventListener('click', function(){
-    
-    if(email.value.indexOf('.') < 0 ){
-        alert(". is abcent");
-    } else if(email.value.indexOf('@') < 0 ){
-        alert("@ is abcent");
-    } else if(!/.*[a-zA-Z0-9][@].*[a-zA-Z0-9][.].*[a-zA-Z0-9]/.test(email.value)){
-        alert("Wrong email format! example@gmail.com");
-    } else if(password.value.length<8){
-        alert("Password length less than 8 symbols!");
-    } else if(!/[A-Z]/.test(password.value)){
-        alert("Password should contain atleast one capital letter!")
-    } else if(!(/\d/.test(password.value))){
-        alert("Password should contain atleast one digit!");
-    } else if(password.value !== confirmPassword.value){
-        alert("Confirm password and password are different!");
-        confirmPassword.value = "";
-    } else{
-        alert("Congratulations! You successfully loged in)");
-        email.value ="";
-        password.value ="";
-        confirmPassword.value ="";
+function getConfirmPasswordError(password, confirmPassword){
+    return password === confirmPassword ? "" : "Confirm password and password are different!";
+}
+
+function clearErrorField(...fields){
+    for(let field of fields){
+        field.value = "";
     }
-})
+}
+
+function showError(message, field){
+    field.innerHTML = message;
+}
+
+function validation(getValidatenMsg, field, errorField){
+    const message = getValidatenMsg(field);
+    showError(message, errorField);
+}
+
+logInBtn.onclick = function(){
+    const message = getEmailError(email.value) || getPasswordError(password.value) ||
+        getConfirmPasswordError(password.value, confirmPassword.value);
+    if(message){
+        alert(message);
+        clearErrorField(confirmPassword);
+    } else {
+        alert("Congratulations! You successfully loged in)");
+        clearErrorField(email, password, confirmPassword);
+    }
+};
 
 email.onblur = function(){
-    if(email.value.length===0){
-        emailErrors.innerHTML = "Email is empty!"
-    } else if(email.value.indexOf('@') < 0 ){
-        emailErrors.innerHTML = "@ is absent!";
-    } else if(email.value.indexOf('.') < 0 ){
-        emailErrors.innerHTML = ". is absent!"
-    } else if(!/.*[a-zA-Z0-9][@].*[a-zA-Z0-9][.].*[a-zA-Z0-9]/.test(email.value)){
-        emailErrors.innerHTML = "Wrong email format! example@gmail.com";
-    }  else {
-        emailErrors.innerHTML = "";
+    let errorfield = document.querySelector('#emailErrors');
+    validation(getEmailError, this.value, errorfield);
+    this.oninput = function(){
+        validation(getEmailError, this.value, errorfield);
     }
 }
 
 password.onblur = function(){
-    if(password.value.length<8){
-        passwordErrors.innerHTML = "Password has to contain more than 8 symbols!";
-    } else if(!/[A-Z]/.test(password.value)){
-        passwordErrors.innerHTML = "Password has to contain atleast one capital letter!";
-    } else if(!(/\d/.test(password.value))){
-        passwordErrors.innerHTML = "Password has to contain atleast one digit!";
-    } else {
-        passwordErrors.innerHTML = "";
+    let errorfield = document.querySelector('#passwordErrors');
+    validation(getPasswordError, this.value, errorfield);
+    this.oninput = function(){
+        validation(getPasswordError, this.value, errorfield);
     }
 }
 
