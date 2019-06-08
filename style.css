@@ -1,0 +1,18 @@
+#tasks{
+    list-style: none;
+    margin: auto;
+    border: 3px dashed purple;
+    text-align: center;
+    width: 30%;
+    margin-top: 5%;
+}
+
+#tasks li a{
+    color: black;
+    font-size: 2em;
+    text-decoration: none;
+}
+
+#tasks li a:hover{
+    color: green;
+}
