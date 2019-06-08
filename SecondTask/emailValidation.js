@@ -1,6 +1,6 @@
 const emailErrorsRules = new Map([
-    [isContainAt, '@ is absent!'],
-    [isContainDot, '. is absent!'], 
+    [isContainAt, 'Email has to contain "@"!'],
+    [isContainDot, 'Email has to contain "."!'], 
     [isCorrectEmailFormat, 'Wrong email format! example@gmail.com']
 ]);
 

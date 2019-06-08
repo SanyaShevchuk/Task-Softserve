@@ -14,43 +14,47 @@ function getConfirmPasswordError(password, confirmPassword){
     return password === confirmPassword ? "" : "Confirm password and password are different!";
 }
 
-logInBtn.addEventListener('click', function(){
-    const message = getEmailError(email.value) || getPasswordError(password.value) ||
-        getConfirmPasswordError(password.value, confirmPassword.value);
-    if(message){
-        alert(message);
-    } else {
-        alert("Congratulations! You successfully loged in)");
-        email.value ="";
-        password.value ="";
-        confirmPassword.value ="";
+function clearErrorField(...fields){
+    for(let field of fields){
+        field.value = "";
     }
-})
+}
 
 function showError(message, field){
     field.innerHTML = message;
 }
 
-function checkEmail(){
-    const message = getEmailError(email.value);
-    const emailErrorsField = document.querySelector('#emailErrors');
-    showError(message, emailErrorsField);
+function validation(getValidatenMsg, field, errorField){
+    const message = getValidatenMsg(field);
+    showError(message, errorField);
 }
 
-function checkPassword(){
-    const message = getPasswordError(password.value);
-    const passwordErrorsField = document.querySelector('#passwordErrors');
-    showError(message, passwordErrorsField);
-}
+logInBtn.onclick = function(){
+    const message = getEmailError(email.value) || getPasswordError(password.value) ||
+        getConfirmPasswordError(password.value, confirmPassword.value);
+    if(message){
+        alert(message);
+        clearErrorField(confirmPassword);
+    } else {
+        alert("Congratulations! You successfully loged in)");
+        clearErrorField(email, password, confirmPassword);
+    }
+};
 
 email.onblur = function(){
-    checkEmail();
-    this.oninput = checkEmail;
+    let errorfield = document.querySelector('#emailErrors');
+    validation(getEmailError, this.value, errorfield);
+    this.oninput = function(){
+        validation(getEmailError, this.value, errorfield);
+    }
 }
 
 password.onblur = function(){
-    checkPassword();
-    this.oninput = checkPassword;
+    let errorfield = document.querySelector('#passwordErrors');
+    validation(getPasswordError, this.value, errorfield);
+    this.oninput = function(){
+        validation(getPasswordError, this.value, errorfield);
+    }
 }
 
 confirmPassword.oninput = function(){
