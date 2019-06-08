@@ -94,7 +94,7 @@ function getUrl(valueOfSelector, indexOfCurrentSelector){
     } else if(selectsNames[indexOfCurrentSelector].name === 'subregion'){
         url += "?fields=name";
     } else if(selectsNames[indexOfCurrentSelector].name === 'country-property'){
-        const countryValue = selects[indexOfCurrentSelector-1].value;//country-select
+        const countryValue = document.querySelector('select[name="country"]').value;
         url = urls.get(selectsNames[indexOfCurrentSelector])
             + countryValue + "?fields=" + valueOfSelector;
     } 

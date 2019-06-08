@@ -1,22 +1,17 @@
 {
   "name": "tasksoftserve",
-  "version": "1.0.0",
-  "description": "tasks for softserve",
-  "main": "index.js",
+  "version": "0.0.0",
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node ./bin/www",
+    "stop": "killall -9 SoftserveTask"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/SanyaShevchuk/Task-Softserve.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/SanyaShevchuk/Task-Softserve/issues"
-  },
-  "homepage": "https://github.com/SanyaShevchuk/Task-Softserve#readme",
   "dependencies": {
-    "lodash": "^4.17.11"
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "express": "~4.16.1",
+    "express-handlebars": "^3.1.0",
+    "http-errors": "~1.6.3",
+    "morgan": "~1.9.1"
   }
 }
