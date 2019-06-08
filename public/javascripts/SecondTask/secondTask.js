@@ -38,16 +38,18 @@ logInBtn.onclick = function(){
     } else {
         alert("Congratulations! You successfully loged in)");
         clearErrorField(email, password, confirmPassword);
+        email.oninput = null;
+        password.oninput = null;
     }
 };
 
-email.onblur = function(){
+email.onblur = function (){
     let errorfield = document.querySelector('#emailErrors');
     validation(getEmailError, this.value, errorfield);
     this.oninput = function(){
         validation(getEmailError, this.value, errorfield);
     }
-}
+};
 
 password.onblur = function(){
     let errorfield = document.querySelector('#passwordErrors');
@@ -55,7 +57,7 @@ password.onblur = function(){
     this.oninput = function(){
         validation(getPasswordError, this.value, errorfield);
     }
-}
+};
 
 confirmPassword.oninput = function(){
     logInBtn.disabled = false;
