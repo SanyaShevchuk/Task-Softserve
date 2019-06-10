@@ -1,4 +1,16 @@
-<form action="" id="task2">
+{{#if success}}
+    <h2 style="color: green">Successful validation</h2>
+{{else}}
+    <ul>
+        {{#each errors}}
+            <li style="color: red">
+                {{this.msg}}
+            </li>
+        {{/each}}
+    </ul>
+{{/if}}
+
+<form action="/secondTask" method="POST" id="task2">
     <label for="e-mail">E-mail</label>
     <input type="text" name="e-mail">
     <p id="emailErrors" class="errors"></p>
@@ -7,6 +19,6 @@
     <p id="passwordErrors" class="errors"></p>
     <label for="confirm-password">Confirm password</label>
     <input type="password" name="confirm-password">
-    <button id="submitBtn" disabled>Log in</button>
+    <button id="submitBtn">Log in</button>
 </form>
-<script type="module" src="javascripts/SecondTask/secondTask.js"></script>
+{{!-- <script type="module" src="javascripts/SecondTask/secondTask.js"></script> --}}
